@@ -1,23 +1,30 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./src/**/*.{js,ts,jsx,tsx}'],
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        figma: 'var(--bg-figma)',
-        'figma-secondaryBg': 'var(--bg-figma-secondary)',
-        'figma-secondaryBg-hover': 'var(--bg-figma-secondary-hover)',
-        'figma-tertiaryBg': 'var(--bg-figma-tertiary)',
-        'figma-blue': 'var(--blue-figma)',
-        'figma-blue-hover': 'var(--blue-figma-hover)',
-        'figma-primary': 'var(--text-figma)',
-        'figma-secondary': 'var(--text-figma-secondary)',
-        'figma-primary-hover': 'var(--text-figma-hover)',
-        'figma-secondary-hover': 'var(--text-figma-secondary-hover)',
-        'figma-onBrand': 'var(--text-figma-onbrand)',
-        'figma-brand': 'var(--text-figma-brand)',
-        'figma-border': 'var(--border-figma)',
-        'figma-icon': 'var(--icon-figma)',
+        "figma-bg": "var(--figma-color-bg)",
+        "figma-primary": "var(--figma-color-text)",
+        "figma-secondary": "var(--figma-color-text-secondary)",
+        "figma-border": "var(--figma-color-border)",
+        "figma-secondaryBg": "var(--figma-color-bg-secondary)",
+        "figma-secondaryBg-hover": "var(--figma-color-bg-hover)",
+        "figma-blue": "var(--figma-color-bg-brand)",
+      },
+      animation: {
+        in: "in 200ms ease-in",
+        out: "out 150ms ease-out",
+      },
+      keyframes: {
+        in: {
+          "0%": { opacity: "0", transform: "translateY(-4px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        out: {
+          "0%": { opacity: "1", transform: "translateY(0)" },
+          "100%": { opacity: "0", transform: "translateY(4px)" },
+        },
       },
     },
   },

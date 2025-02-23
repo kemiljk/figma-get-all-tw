@@ -1,8 +1,10 @@
 {
-  "name": "Get››all",
+  "name": "Get All",
   "id": "963807322482539548",
   "api": "1.0.0",
   "main": "dist/code.js",
   "ui": "dist/ui.html",
-  "editorType": ["figma", "figjam"]
+  "editorType": ["figma", "figjam"],
+  "networkAccess": { "allowedDomains": ["none"] },
+  "documentAccess": "dynamic-page"
 }

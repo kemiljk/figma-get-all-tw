@@ -18,3 +18,25 @@
   --border-figma: var(--figma-color-border);
   --icon-figma: var(--figma-color-icon);
 }
+
+@layer base {
+  /* Set default focus styles for all interactive elements */
+  :focus-visible {
+    @apply outline-none ring-2 ring-figma-blue ring-offset-2;
+  }
+
+  /* Remove default focus styles for elements that don't need them */
+  :focus:not(:focus-visible) {
+    @apply outline-none ring-0;
+  }
+
+  /* Ensure buttons, inputs, and other interactive elements use the focus styles */
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  [role="button"]:focus-visible,
+  [role="option"]:focus-visible,
+  [role="combobox"]:focus-visible {
+    @apply outline-none ring-2 ring-figma-blue ring-offset-2;
+  }
+}
