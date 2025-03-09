@@ -148,6 +148,7 @@ const App = () => {
   const [referenceNodeIndex, setReferenceNodeIndex] = React.useState(0);
   const [selectedNodes, setSelectedNodes] = React.useState<number>(0);
   const [searchName, setSearchName] = React.useState("");
+  const [noFontsFound, setNoFontsFound] = React.useState(false);
 
   // Load saved data from Figma client storage
   React.useEffect(() => {
@@ -184,6 +185,7 @@ const App = () => {
             label: font,
           }))
         );
+        setNoFontsFound(msg.noFontsFound || false);
       }
       if (msg.styleNames) {
         setFontOptions(
@@ -262,10 +264,17 @@ const App = () => {
   };
 
   const toggleSection = (id: string) => {
+    const isOpening = !openSections[id];
+
     setOpenSections((prev) => ({
       ...prev,
       [id]: !prev[id],
     }));
+
+    // Request fonts when text section is opened
+    if (isOpening && id === "text") {
+      parent.postMessage({ pluginMessage: { type: "request-fonts" } }, "*");
+    }
   };
 
   // Improve search to handle fuzzy matching and auto-open sections
@@ -358,11 +367,16 @@ const App = () => {
         </button>
         {openSections[id] && (
           <div className="space-y-2 mt-2 px-2">
-            {hasSelect && selectType === "font" && <Select value={selectedFontName} onValueChange={handleFontSelect} options={fontOptions} placeholder="Select a font..." />}
+            {hasSelect && selectType === "font" && (
+              <>
+                <Select value={selectedFontName} onValueChange={handleFontSelect} options={fontOptions} placeholder="Select a font..." />
+                {noFontsFound && <div className="text-xs text-figma-secondary mt-1">No text nodes found on this page. Select a text node to see available fonts.</div>}
+              </>
+            )}
             <div className="grid grid-cols-2 gap-2 w-full">
               {filteredOptions.map((option) => (
                 <div key={option.id} className="flex items-center gap-1">
-                  <button className={`flex-1 rounded-md bg-figma-secondaryBg py-2 px-3 text-xs font-medium hover:bg-figma-secondaryBg-hover transition-colors relative group ${selectedOptions.some((o) => o.id === option.id) ? "ring-2 ring-figma-primary" : ""}`} onClick={() => handleOptionClick(option.type, option)} title={option.description}>
+                  <button className={`flex-1 rounded-md bg-figma-secondaryBg py-2 px-3 text-xs text-figma-primary font-medium hover:bg-figma-secondaryBg-hover transition-colors relative group ${selectedOptions.some((o) => o.id === option.id) ? "ring-2 ring-figma-primary" : ""}`} onClick={() => handleOptionClick(option.type, option)} title={option.description}>
                     {option.label}
                     {option.description && (
                       <div className="absolute left-2 right-2 bottom-full mb-2 p-2 bg-figma-bg border border-figma-border rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none whitespace-normal">
@@ -372,8 +386,8 @@ const App = () => {
                     )}
                   </button>
                   <button
-                    className="p-1 rounded hover:bg-figma-secondaryBg"
-                    onClick={(e) => {
+                    className="p-1 rounded hover:bg-figma-secondaryBg text-figma-primary"
+                    onClick={(e: any) => {
                       e.stopPropagation();
                       toggleFavorite(option);
                     }}
@@ -485,9 +499,9 @@ const App = () => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex flex-col h-full bg-figma">
       {/* Header */}
-      <div className="sticky top-0 bg-white shadow-sm z-10 p-4">
+      <div className="sticky top-0 bg-figma shadow-sm z-10 p-4">
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <SearchInput value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Type to build search query..." className="flex-1" suggestions={searchQuery ? getQuerySuggestions(searchQuery) : []} onSuggestionSelect={handleQuerySelection} />
@@ -527,7 +541,7 @@ const App = () => {
             </div>
             <div className="space-y-3">
               {favorites.map((favorite) => (
-                <div key={favorite.id} className="p-3 rounded-lg border border-figma-border bg-white hover:bg-figma-secondaryBg/30 transition-colors">
+                <div key={favorite.id} className="p-3 rounded-lg border border-figma-border bg-figma hover:bg-figma-secondaryBg/30 transition-colors">
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="font-medium text-figma-primary">{favorite.name}</h3>
                     <div className="flex items-center gap-2">
@@ -574,7 +588,7 @@ const App = () => {
 
       {/* Save Search Dialog */}
       {selectedChips.length > 0 && (
-        <div className="sticky bottom-0 bg-white border-t p-4">
+        <div className="sticky bottom-0 bg-figma border-t p-4">
           <div className="flex gap-2">
             <div className="flex-1">
               <SearchInput value={searchName} onChange={(e) => setSearchName(e.target.value)} placeholder="Name this search..." icon={BookmarkIcon} />

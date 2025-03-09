@@ -20,7 +20,14 @@ async function findAllFonts() {
   const uniqueFonts = [...new Set(nodes)];
   const selectList = uniqueFonts.filter(Boolean);
 
-  figma.ui.postMessage({ fontNames: selectList });
+  if (selectList.length === 0) {
+    figma.ui.postMessage({
+      fontNames: ["No text nodes found on this page"],
+      noFontsFound: true,
+    });
+  } else {
+    figma.ui.postMessage({ fontNames: selectList });
+  }
 }
 findAllFonts();
 
@@ -48,6 +55,11 @@ figma.ui.onmessage = (msg) => {
       }
     };
     loadData();
+    return;
+  }
+
+  if (msg.type === "request-fonts") {
+    findAllFonts();
     return;
   }
 
